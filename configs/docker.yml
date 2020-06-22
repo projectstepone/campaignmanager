@@ -1,0 +1,82 @@
+server:
+  applicationConnectors:
+  - type: http
+    port: 8080
+  adminConnectors:
+  - type: http
+    port: 8081
+  applicationContextPath: /
+  requestLog:
+    appenders:
+    - type: console
+      timeZone: IST
+
+logging:
+  level: INFO
+  loggers:
+    deprecation: ERROR
+    org.hibernate: ERROR
+    QueuedSender: WARN
+    com.codahale.metrics.collectd: ERROR
+    io.appform.campaignmanager: ${LOG_LEVEL}
+  appenders:
+    - type: console
+      threshold: TRACE
+      timeZone: IST
+      logFormat: "%(%-5level) [%date] %X{TRACE-ID} [%thread] [%logger{0}]: %message%n"
+
+db:
+  shards:
+    - driverClass: org.mariadb.jdbc.Driver
+      user: ${DB_USER}
+      password: ${DB_PASSWORD}
+      url: ${SHARD0_CONNECTION_STRING}
+      properties:
+        charSet: UTF-8
+        hibernate.dialect: org.hibernate.dialect.MySQLDialect
+      maxWaitForConnection: 1s
+      validationQuery: "/* MyApplication Health Check */ SELECT 1"
+      minSize: 8
+      maxSize: 8
+      initialSize: 8
+      logAbandonedConnections: true
+      logValidationErrors: true
+      checkConnectionWhileIdle: true
+      checkConnectionOnConnect: true
+      validationQueryTimeout: 1s
+      removeAbandoned: true
+      evictionInterval: 30s
+      minIdleTime: 1m
+    - driverClass: org.mariadb.jdbc.Driver
+      user: ${DB_USER}
+      password: ${DB_PASSWORD}
+      url: ${SHARD1_CONNECTION_STRING}
+      properties:
+        charSet: UTF-8
+        hibernate.dialect: org.hibernate.dialect.MySQLDialect
+      maxWaitForConnection: 1s
+      validationQuery: "/* MyApplication Health Check */ SELECT 1"
+      minSize: 8
+      maxSize: 8
+      initialSize: 8
+      logAbandonedConnections: true
+      logValidationErrors: true
+      checkConnectionWhileIdle: true
+      checkConnectionOnConnect: true
+      validationQueryTimeout: 1s
+      removeAbandoned: true
+      evictionInterval: 30s
+      minIdleTime: 1m
+
+okta:
+  baseUrl: ${OKTA_BASE_URL}
+  clientId: ${OKTA_CLIENT_ID}
+
+providerConfigs:
+  configs:
+    KALEYRA_SMS:
+      apiKey: ${KALEYRA_SMS_KEY}
+      senders: ${KALEYRA_SMS_SENDERS}
+    KALEYRA_IVR:
+      apiKey: ${KALEYRA_IVR_KEY}
+

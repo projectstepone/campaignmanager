@@ -1,0 +1,24 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Provider</th>
+        <th scope="col">Last Updated</th>
+        <th scope="col">Provider Response</th>
+        <th scope="col">State</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each items}}
+        <tr data-campaign-id="{{campaignId}}" data-notification-id="{{notificationId}}">
+            <td>{{notificationId}}</td>
+            <td>{{phone}}</td>
+            <td>{{provider}}</td>
+            <td>{{updated}}</td>
+            <td>{{translatedProviderResponse}}</td>
+            <td>{{state}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

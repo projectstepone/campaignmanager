@@ -1,0 +1,10 @@
+.cm-first-row {
+  padding: 1rem;
+}
+
+.cm-text-box {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border: solid darkgray !important;
+  border-width: 1px !important;
+}

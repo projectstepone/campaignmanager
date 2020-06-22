@@ -1,0 +1,83 @@
+<table class="table table-bordered">
+    {{#with campaign}}
+        <tbody>
+        <tr>
+            <th scope="row">Name</th>
+            <td colspan="8">{{name}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Created By</th>
+            <td colspan="8">{{createdBy}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Type</th>
+            <td colspan="8">{{notificationType}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Content</th>
+            <td class="text-wrap" colspan="8" style="white-space: pre-wrap;">{{content}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Send As</th>
+            <td class="text-wrap" colspan="8">{{sendAs}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Number of entries</th>
+            <td colspan="8">{{itemCount}}</td>
+        </tr>
+        {{#eqstr state "CREATED"}}
+            <tr>
+                <th scope="row">Start campaign</th>
+                <td colspan="8">
+                    <form method="post" action="/campaign/{{campaignId}}/trigger">
+                        <button class="btn btn-success">Start</button>
+                    </form>
+                </td>
+            </tr>
+        {{else}}
+            {{#with progress}}
+                <tr>
+                    <th scope="row">Sending Progress</th>
+                    <td colspan="8">
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{sent}}%;"
+                                 aria-valuenow="{{sent}}" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{failed}}%;"
+                                 aria-valuenow="{{failed}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Sending Status</th>
+                    <td class="text-primary"><strong>Completed</strong></td>
+                    <td class="completed-value">{{completed}}</td>
+                    <td class="text-info"><strong>Sent</strong></td>
+                    <td class="success-value">{{sent}}</td>
+                    <td class="text-danger"><strong>Failures</strong></td>
+                    <td class="failure-value">{{failures}}</td>
+                    <td><strong>State</strong></td>
+                    <td class="cm-state-value">{{state}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery Progress</th>
+                    <td colspan="8">
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{delivered}}%;"
+                                 aria-valuenow="{{delivered}}" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{deliveryFailures}}%;"
+                                 aria-valuenow="{{deliveryFailures}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td>
+                </tr>
+            {{/with}}
+            <tr>
+                <th scope="row">Delivery Status</th>
+                <td class="text-success" colspan="3"><strong>Delivered</strong></td>
+                <td class="success-value">{{delivered}}</td>
+                <td class="text-danger" colspan="3"><strong>Delivery Failure</strong></td>
+                <td class="success-value">{{deliveryFailures}}</td>
+            </tr>
+        {{/eqstr}}
+        </tbody>
+    {{/with}}
+</table>
