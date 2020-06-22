@@ -13,7 +13,7 @@
   `failures` bigint(20) DEFAULT '0',
   `permanent_failures` bigint(20) DEFAULT '0',
   `temporary_failures` bigint(20) DEFAULT '0',
-    `delivered` bigint(20) DEFAULT '0',
+  `delivered` bigint(20) DEFAULT '0',
   `delivery_failures` bigint(20) DEFAULT '0',
   `created` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
   `updated` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),

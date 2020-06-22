@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.inject.Stage;
+import io.appform.campaignmanager.auth.AuthModule;
 import io.appform.campaignmanager.handlebars.HandlebarsHelperBundle;
 import io.appform.campaignmanager.handlebars.HandlebarsHelpers;
 import io.appform.dropwizard.sharding.DBShardingBundle;
@@ -38,7 +39,8 @@ public class App extends Application<AppConfig> {
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
                                                new EnvironmentVariableSubstitutor(true)));
-        final DBShardingBundle<AppConfig> dbShardingBundle = new DBShardingBundle<AppConfig>("io.appform.campaignmanager.model") {
+        final DBShardingBundle<AppConfig> dbShardingBundle = new DBShardingBundle<AppConfig>(
+                "io.appform.campaignmanager.model", "io.appform.campaignmanager.auth") {
             @Override
             protected ShardedHibernateFactory getConfig(AppConfig appConfig) {
                 return appConfig.getDb();
@@ -52,8 +54,8 @@ public class App extends Application<AppConfig> {
         bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(
                 GuiceBundle.<AppConfig>builder()
-                .enableAutoConfig(getClass().getPackage().getName())
-                .modules(new CoreModule(dbShardingBundle))
+                .enableAutoConfig(getClass().getPackage().getName(), "io.appform.dropwizard.multiauth")
+                .modules(new CoreModule(dbShardingBundle), new AuthModule(dbShardingBundle))
                 .useWebInstallers()
                 .printDiagnosticInfo()
                 .build(Stage.PRODUCTION));

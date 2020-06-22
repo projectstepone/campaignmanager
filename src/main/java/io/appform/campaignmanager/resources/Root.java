@@ -5,12 +5,12 @@ import io.appform.campaignmanager.AppConfig;
 import io.appform.campaignmanager.data.CampaignStore;
 import io.appform.campaignmanager.jobexec.Notifier;
 import io.appform.campaignmanager.model.*;
-import io.appform.campaignmanager.okta.User;
 import io.appform.campaignmanager.utils.Utils;
 import io.appform.campaignmanager.views.CampaignSnapshotView;
 import io.appform.campaignmanager.views.CampaignView;
 import io.appform.campaignmanager.views.HomeView;
 import io.appform.campaignmanager.views.ItemsSnapshotView;
+import io.appform.dropwizard.multiauth.model.ServiceUser;
 import io.dropwizard.auth.Auth;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +73,7 @@ public class Root {
             @FormDataParam("smsSender") final String sender,
             @FormDataParam("smsFile") InputStream fileInputStream,
             @FormDataParam("smsFile") FormDataContentDisposition fileMetaData,
-            @Auth final User user) {
+            @Auth final ServiceUser user) {
         final String fileName = fileMetaData.getFileName();
         final String campaignId = UUID.randomUUID().toString();
         val outFile = File.createTempFile(campaignId, "csv");
@@ -88,7 +88,7 @@ public class Root {
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
                                             .name(System.currentTimeMillis() + "-" + fileName)
-                                            .createdBy(user.getName())
+                                            .createdBy(user.getId())
                                             .notificationType(NotificationType.SMS)
                                             .content(smsText)
                                             .sendAs(sender)
@@ -125,7 +125,7 @@ public class Root {
             @FormDataParam("ivrSender") final String ivrSender,
             @FormDataParam("ivrFile") InputStream fileInputStream,
             @FormDataParam("ivrFile") FormDataContentDisposition fileMetaData,
-            @Auth final User user) {
+            @Auth final ServiceUser user) {
         final String fileName = fileMetaData.getFileName();
         final String campaignId = UUID.randomUUID().toString();
         val outFile = File.createTempFile(campaignId, "csv");
@@ -140,7 +140,7 @@ public class Root {
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
                                             .name(System.currentTimeMillis() + "-" + fileName)
-                                            .createdBy(user.getName())
+                                            .createdBy(user.getId())
                                             .notificationType(NotificationType.IVR)
                                             .content(smsText)
                                             .sendAs(ivrSender)

@@ -68,9 +68,20 @@ db:
       evictionInterval: 30s
       minIdleTime: 1m
 
-okta:
-  baseUrl: ${OKTA_BASE_URL}
-  clientId: ${OKTA_CLIENT_ID}
+auth:
+  enabled: ${AUTH_ENABLED}
+  jwt:
+    issuerId: statesman
+    privateKey: ${JWT_PRIVATE_KEY}
+    serviceName: statesman
+    sessionDuration: 15d
+
+  provider:
+    clientId: ${GOOGLE_CLIENT_ID}
+    clientSecret: ${GOOGLE_CLIENT_SECRET}
+    server: ${SERVER_ENDPOINT}
+    secureEndpoint: ${SECURE_ENDPOINT}
+    loginDomain: ${GOOGLE_DOMAIN}
 
 providerConfigs:
   configs:
