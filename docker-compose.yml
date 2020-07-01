@@ -20,6 +20,7 @@ services:
     ports:
     - "8080:8080"
     - "8081:8081"
+    - "5005:5005"
     volumes:
     - /var/log/campaign-manager
     environment:
@@ -39,6 +40,7 @@ services:
       KALEYRA_SMS_KEY: ${KALEYRA_SMS_KEY}
       KALEYRA_SMS_SENDERS: ${KALEYRA_SMS_SENDERS}
       KALEYRA_IVR_KEY: ${KALEYRA_IVR_KEY}
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
     depends_on:
       - mariadb_1
       - mariadb_2

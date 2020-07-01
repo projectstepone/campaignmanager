@@ -11,6 +11,7 @@ import io.appform.campaignmanager.views.CampaignView;
 import io.appform.campaignmanager.views.HomeView;
 import io.appform.campaignmanager.views.ItemsSnapshotView;
 import io.appform.dropwizard.multiauth.model.ServiceUser;
+import io.appform.dropwizard.multiauth.model.ServiceUserPrincipal;
 import io.dropwizard.auth.Auth;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +74,7 @@ public class Root {
             @FormDataParam("smsSender") final String sender,
             @FormDataParam("smsFile") InputStream fileInputStream,
             @FormDataParam("smsFile") FormDataContentDisposition fileMetaData,
-            @Auth final ServiceUser user) {
+            @Auth final ServiceUserPrincipal user) {
         final String fileName = fileMetaData.getFileName();
         final String campaignId = UUID.randomUUID().toString();
         val outFile = File.createTempFile(campaignId, "csv");
@@ -88,7 +89,7 @@ public class Root {
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
                                             .name(System.currentTimeMillis() + "-" + fileName)
-                                            .createdBy(user.getId())
+                                            .createdBy(user.getUser().getId())
                                             .notificationType(NotificationType.SMS)
                                             .content(smsText)
                                             .sendAs(sender)
