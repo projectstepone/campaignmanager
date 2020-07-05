@@ -10,7 +10,6 @@ import io.appform.campaignmanager.views.CampaignSnapshotView;
 import io.appform.campaignmanager.views.CampaignView;
 import io.appform.campaignmanager.views.HomeView;
 import io.appform.campaignmanager.views.ItemsSnapshotView;
-import io.appform.dropwizard.multiauth.model.ServiceUser;
 import io.appform.dropwizard.multiauth.model.ServiceUserPrincipal;
 import io.dropwizard.auth.Auth;
 import lombok.SneakyThrows;
@@ -126,7 +125,7 @@ public class Root {
             @FormDataParam("ivrSender") final String ivrSender,
             @FormDataParam("ivrFile") InputStream fileInputStream,
             @FormDataParam("ivrFile") FormDataContentDisposition fileMetaData,
-            @Auth final ServiceUser user) {
+            @Auth final ServiceUserPrincipal user) {
         final String fileName = fileMetaData.getFileName();
         final String campaignId = UUID.randomUUID().toString();
         val outFile = File.createTempFile(campaignId, "csv");
@@ -141,7 +140,7 @@ public class Root {
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
                                             .name(System.currentTimeMillis() + "-" + fileName)
-                                            .createdBy(user.getId())
+                                            .createdBy(user.getUser().getId())
                                             .notificationType(NotificationType.IVR)
                                             .content(smsText)
                                             .sendAs(ivrSender)
