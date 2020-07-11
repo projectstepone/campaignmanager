@@ -41,6 +41,8 @@ services:
       KALEYRA_SMS_SENDERS: ${KALEYRA_SMS_SENDERS}
       KALEYRA_IVR_KEY: ${KALEYRA_IVR_KEY}
       JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+      PROVIDER_CALLBACK_ENDPOINT: "http://localhost:8080"
+
     depends_on:
       - mariadb_1
       - mariadb_2

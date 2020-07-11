@@ -86,6 +86,7 @@ auth:
     loginDomain: ${GOOGLE_DOMAIN}
 
 providerConfigs:
+  callbackEndpoint: ${PROVIDER_CALLBACK_ENDPOINT}
   configs:
     KALEYRA_SMS:
       apiKey: ${KALEYRA_SMS_KEY}

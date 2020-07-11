@@ -243,7 +243,10 @@ public class Notifier {
 
         @SneakyThrows
         private String callbackUrl(StoredNotificationItem notificationItem) {
-            return "https://smscampaigns.projectstepone.org/delivery/" + notificationItem.getCampaignId() + "/" + notificationItem.getNotificationId() + "?status={status}";
+            return providerConfigs.getCallbackEndpoint()
+                    + "/delivery/" + notificationItem.getCampaignId()
+                    + "/" + notificationItem.getNotificationId()
+                    + "?status={status}";
         }
     }
 }

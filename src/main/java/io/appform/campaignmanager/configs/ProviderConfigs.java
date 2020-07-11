@@ -20,6 +20,9 @@ public class ProviderConfigs {
     @NotEmpty
     private Map<ProviderType, Map<String, String>> configs;
 
+    @NotEmpty
+    private String callbackEndpoint;
+
     @JsonIgnore
     @ValidationMethod(message = "Provider configs are not valid")
     public boolean isConfigValid() {
