@@ -29,7 +29,6 @@ services:
       SHARD1_CONNECTION_STRING: jdbc:mariadb://mariadb_2/campaignmanager_db_2?createDatabaseIfNotExist=true
       DB_USER: root
       DB_PASSWORD: password
-      SHARDS: 2
       AUTH_ENABLED: "true"
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}

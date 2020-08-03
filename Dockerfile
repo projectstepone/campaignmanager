@@ -9,8 +9,8 @@ EXPOSE 8081
 
 VOLUME /var/log/campaignmanager
 
-ADD configs/docker.yml docker.yml
+ADD configs/docker.yml config/docker.yml
 ADD target/campaign-manager*.jar campaignmanager.jar
+ADD startup.sh startup.sh
 
-CMD sh -c "java -Ddb.shards=${SHARDS-2} -Dfile.encoding=utf-8 -XX:+${GC_ALGO-UseG1GC} -Xms${JAVA_PROCESS_MIN_HEAP-1g} -Xmx${JAVA_PROCESS_MAX_HEAP-1g} ${JAVA_OPTS} -jar campaignmanager.jar server docker.yml"
-
+CMD ./startup.sh
