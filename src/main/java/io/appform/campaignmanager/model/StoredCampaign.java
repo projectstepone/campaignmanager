@@ -42,6 +42,9 @@ public class StoredCampaign {
     @Column(name = "send_as", nullable = false, columnDefinition = "blob")
     private String sendAs;
 
+    @Column(name = "auth_key")
+    private String authKey;
+
     @Column(name = "item_count")
     private long itemCount;
 
@@ -87,6 +90,7 @@ public class StoredCampaign {
             NotificationType notificationType,
             String content,
             String sendAs,
+            String authKey,
             CampaignState state,
             long itemCount) {
         this.campaignId = campaignId;
@@ -95,6 +99,7 @@ public class StoredCampaign {
         this.notificationType = notificationType;
         this.content = content;
         this.sendAs = sendAs;
+        this.authKey = authKey;
         this.state = state;
         this.itemCount = itemCount;
     }

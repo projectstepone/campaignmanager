@@ -190,10 +190,7 @@ public class Notifier {
                         .setScheme("https")
                         .setHost("api-voice.kaleyra.com")
                         .setPath("/v1/")
-                        .addParameter("api_key",
-                                      providerConfigs.getConfigs()
-                                              .get(ProviderType.KALEYRA_IVR)
-                                              .get("apiKey"))
+                        .addParameter("api_key", campaign.getAuthKey())
                         .addParameter("method", "dial.click2call")
                         .addParameter("receiver", "ivr:" + campaign.getContent())
                         .addParameter("caller", ivr.getPhone())

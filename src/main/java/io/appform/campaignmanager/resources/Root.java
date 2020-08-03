@@ -121,7 +121,8 @@ public class Root {
     @SneakyThrows
     @PermitAll
     public Response createIVRCampaign(
-            @FormDataParam("ivrId") final String smsText,
+            @FormDataParam("ivrId") final String ivrId,
+            @FormDataParam("ivrKey") final String ivrKey,
             @FormDataParam("ivrSender") final String ivrSender,
             @FormDataParam("ivrFile") InputStream fileInputStream,
             @FormDataParam("ivrFile") FormDataContentDisposition fileMetaData,
@@ -142,8 +143,9 @@ public class Root {
                                             .name(System.currentTimeMillis() + "-" + fileName)
                                             .createdBy(user.getUser().getId())
                                             .notificationType(NotificationType.IVR)
-                                            .content(smsText)
+                                            .content(ivrId)
                                             .sendAs(ivrSender)
+                                            .authKey(ivrKey)
                                             .itemCount(numbers.size())
                                             .state(CampaignState.CREATED)
                                             .build(),
