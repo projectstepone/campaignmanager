@@ -143,7 +143,7 @@ public class Notifier {
                 response = httpClient.execute(smsSendRequest);
                 httpCode = response.getStatusLine().getStatusCode();
                 httpResponse = EntityUtils.toString(response.getEntity());
-                if (HttpStatus.SC_OK == 200) {
+                if (HttpStatus.SC_OK == httpCode) {
                     val responeNode = mapper.readTree(httpResponse);
                     val responseNode = responeNode.at("/data/0/status");
                     if (!responeNode.isMissingNode()) {
@@ -204,7 +204,7 @@ public class Notifier {
                 response = httpClient.execute(ivrSendRequest);
                 httpCode = response.getStatusLine().getStatusCode();
                 httpResponse = EntityUtils.toString(response.getEntity());
-                if (HttpStatus.SC_OK == 200) {
+                if (HttpStatus.SC_OK == httpCode) {
                     val responeNode = mapper.readTree(httpResponse);
                     val responseNode = responeNode.at("/status");
                     if (!responeNode.isMissingNode()) {
