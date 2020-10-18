@@ -15,6 +15,10 @@ import io.dropwizard.auth.Auth;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.text.StringSubstitutor;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -26,13 +30,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  *
@@ -45,6 +54,11 @@ public class Root {
     private final Provider<Notifier> notifier;
     private final AppConfig appConfig;
 
+    private static final String CONTACT_NUMBER = "Contact Number";
+
+    private static final String REPLACEMENT_PREFIX = "<";
+
+    private static final String REPLACEMENT_SUFFIX = ">";
     @Inject
     public Root(
             Provider<CampaignStore> campaignStoreProvider,
@@ -76,14 +90,19 @@ public class Root {
             @Auth final ServiceUserPrincipal user) {
         final String fileName = fileMetaData.getFileName();
         final String campaignId = UUID.randomUUID().toString();
-        val outFile = File.createTempFile(campaignId, "csv");
+        File outFile = File.createTempFile(campaignId, "csv");
         Files.copy(fileInputStream, outFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        val lines = Files.readAllLines(outFile.toPath());
-        val numbers = lines
-                .stream()
-                .filter(line -> line.matches("^\\p{Digit}{10}$"))
+        Reader in = new FileReader(outFile);
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.withIgnoreSurroundingSpaces()
+                                                       .withFirstRecordAsHeader()
+                                                       .parse(in);
+
+        List<StoredSmsNotificationItem> notificationItems = StreamSupport.stream(records.spliterator(), false)
+                .map(item -> getNotificationItem(item, smsText))
+                .filter(item -> item.getPhone().matches("^\\p{Digit}{10}$"))
                 .collect(Collectors.toList());
-        if (!numbers.isEmpty()) {
+
+        if (!notificationItems.isEmpty()) {
             val campaign = campaignStoreProvider.get()
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
@@ -92,14 +111,15 @@ public class Root {
                                             .notificationType(NotificationType.SMS)
                                             .content(smsText)
                                             .sendAs(sender)
-                                            .itemCount(numbers.size())
+                                            .itemCount(notificationItems.size())
                                             .state(CampaignState.CREATED)
                                             .build(),
-                                    numbers.stream()
-                                            .map(number -> StoredSmsNotificationItem.builder()
+                                    notificationItems.stream()
+                                            .map(item -> StoredSmsNotificationItem.builder()
                                                     .campaignId(campaignId)
                                                     .notificationId(UUID.randomUUID().toString())
-                                                    .phone(number)
+                                                    .phone(item.getPhone())
+                                                    .content(item.getContent())
                                                     .provider(ProviderType.KALEYRA_SMS)
                                                     .state(NotificationState.CREATED)
                                                     .build())
@@ -261,4 +281,26 @@ public class Root {
                                      .get("senders"));
     }
 
+
+    /**
+     * Resolves the specified template text, with replacement parameters specified in the specified {@link CSVRecord}.
+     *
+     * @param record the replacement parameters embedded in the {@link CSVRecord} instance
+     * @param templateText the template text that needs to be resolved
+     *
+     * @return the resolved text
+     */
+    private StoredSmsNotificationItem getNotificationItem(CSVRecord record, String templateText) {
+
+       Map<String, String> map = record.toMap();
+
+       String resolvedText = StringSubstitutor.replace(templateText, map,  REPLACEMENT_PREFIX, REPLACEMENT_SUFFIX);
+
+       StoredSmsNotificationItem item = new StoredSmsNotificationItem();
+       String phoneNo = record.get(CONTACT_NUMBER);
+       item.setPhone(phoneNo);
+       item.setContent(resolvedText);
+
+       return item;
+    }
 }

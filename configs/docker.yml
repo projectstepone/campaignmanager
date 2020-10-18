@@ -70,8 +70,6 @@ db:
 
 auth:
   enabled: ${AUTH_ENABLED}
-  allowedPatterns:
-  - /delivery/
   jwt:
     issuerId: statesman
     privateKey: ${JWT_PRIVATE_KEY}

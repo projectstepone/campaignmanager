@@ -40,6 +40,9 @@ public abstract class StoredNotificationItem {
     @Column(name = "notification_id", nullable = false, unique = true)
     private String notificationId;
 
+    @Column(name = "content", nullable = true, columnDefinition = "blob")
+    private String content;
+
     @Column(name = "campaign_id", nullable = false)
     private String campaignId;
 

@@ -5,3 +5,7 @@
 /target
 dep
 out
+.DS_Store
+.classpath
+.project
+.settings
