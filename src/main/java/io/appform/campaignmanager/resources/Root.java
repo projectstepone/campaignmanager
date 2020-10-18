@@ -90,19 +90,18 @@ public class Root {
             @Auth final ServiceUserPrincipal user) {
         final String fileName = fileMetaData.getFileName();
         final String campaignId = UUID.randomUUID().toString();
-        File outFile = File.createTempFile(campaignId, "csv");
+        val outFile = File.createTempFile(campaignId, "csv");
         Files.copy(fileInputStream, outFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Reader in = new FileReader(outFile);
         Iterable<CSVRecord> records = CSVFormat.RFC4180.withIgnoreSurroundingSpaces()
                                                        .withFirstRecordAsHeader()
-                                                       .parse(in);
+                                                       .parse(new FileReader(outFile));
 
-        List<StoredSmsNotificationItem> notificationItems = StreamSupport.stream(records.spliterator(), false)
+        val notifications = StreamSupport.stream(records.spliterator(), false)
                 .map(item -> getNotificationItem(item, smsText))
                 .filter(item -> item.getPhone().matches("^\\p{Digit}{10}$"))
                 .collect(Collectors.toList());
 
-        if (!notificationItems.isEmpty()) {
+        if (!notifications.isEmpty()) {
             val campaign = campaignStoreProvider.get()
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
@@ -111,15 +110,15 @@ public class Root {
                                             .notificationType(NotificationType.SMS)
                                             .content(smsText)
                                             .sendAs(sender)
-                                            .itemCount(notificationItems.size())
+                                            .itemCount(notifications.size())
                                             .state(CampaignState.CREATED)
                                             .build(),
-                                    notificationItems.stream()
-                                            .map(item -> StoredSmsNotificationItem.builder()
+                                    notifications.stream()
+                                            .map(notification -> StoredSmsNotificationItem.builder()
                                                     .campaignId(campaignId)
                                                     .notificationId(UUID.randomUUID().toString())
-                                                    .phone(item.getPhone())
-                                                    .content(item.getContent())
+                                                    .phone(notification.getPhone())
+                                                    .content(notification.getContent())
                                                     .provider(ProviderType.KALEYRA_SMS)
                                                     .state(NotificationState.CREATED)
                                                     .build())
@@ -290,17 +289,12 @@ public class Root {
      *
      * @return the resolved text
      */
-    private StoredSmsNotificationItem getNotificationItem(CSVRecord record, String templateText) {
+    private Notification getNotificationItem(CSVRecord record, String templateText) {
 
-       Map<String, String> map = record.toMap();
+       val map = record.toMap();
 
-       String resolvedText = StringSubstitutor.replace(templateText, map,  REPLACEMENT_PREFIX, REPLACEMENT_SUFFIX);
-
-       StoredSmsNotificationItem item = new StoredSmsNotificationItem();
-       String phoneNo = record.get(CONTACT_NUMBER);
-       item.setPhone(phoneNo);
-       item.setContent(resolvedText);
-
-       return item;
+       val resolvedText = StringSubstitutor.replace(templateText, map,  REPLACEMENT_PREFIX, REPLACEMENT_SUFFIX);
+       val phoneNo = record.get(CONTACT_NUMBER);
+       return new Notification(phoneNo, resolvedText);
     }
 }
