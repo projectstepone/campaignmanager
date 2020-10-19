@@ -131,7 +131,7 @@ public class Notifier {
                                               .get(ProviderType.KALEYRA_SMS)
                                               .get("apiKey"))
                         .addParameter("method", "sms")
-                        .addParameter("message", campaign.getContent())
+                        .addParameter("message", sms.getContent())
                         .addParameter("to", sms.getPhone())
                         .addParameter("sender", campaign.getSendAs())
                         .addParameter("unicode", "auto")

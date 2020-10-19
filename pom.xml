@@ -25,6 +25,7 @@
         <guice.version>4.2.0</guice.version>
         <docker.repo>docker.io/santanusinha</docker.repo>
         <commons-csv.version>1.8</commons-csv.version>
+        <commons-text.version>1.9</commons-text.version>
         <jackson.version>2.9.10</jackson.version>
     </properties>
 
@@ -131,6 +132,16 @@
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${commons-csv.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text.version}</version>
         </dependency>
     </dependencies>
 

@@ -22,6 +22,8 @@ public class StoredSmsNotificationItem extends StoredNotificationItem {
 
     @Column(nullable = false)
     private String phone;
+    @Column(nullable = true)
+    private String content;
 
     public StoredSmsNotificationItem() {
         super(NotificationType.SMS);
@@ -33,9 +35,11 @@ public class StoredSmsNotificationItem extends StoredNotificationItem {
             String campaignId,
             ProviderType provider,
             NotificationState state,
-            String phone) {
+            String phone,
+            String content) {
         super(NotificationType.SMS, notificationId, campaignId, provider, state);
         this.phone = phone;
+        this.content = content;
     }
 
     @Override
