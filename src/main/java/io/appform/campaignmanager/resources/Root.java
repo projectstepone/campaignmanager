@@ -97,8 +97,8 @@ public class Root {
                                                        .parse(new FileReader(outFile));
 
         val notifications = StreamSupport.stream(records.spliterator(), false)
-                .map(item -> getNotificationItem(item, smsText))
-                .filter(item -> item.getPhone().matches("^\\p{Digit}{10}$"))
+                .map(item -> getSmsNotificationData(item, smsText))
+                .filter(smsNotificationData -> smsNotificationData.getPhone().matches("^\\p{Digit}{10}$"))
                 .collect(Collectors.toList());
 
         if (!notifications.isEmpty()) {
@@ -289,12 +289,12 @@ public class Root {
      *
      * @return the resolved text
      */
-    private Notification getNotificationItem(CSVRecord record, String templateText) {
+    private SmsNotificationData getSmsNotificationData(CSVRecord record, String templateText) {
 
        val map = record.toMap();
 
        val resolvedText = StringSubstitutor.replace(templateText, map,  REPLACEMENT_PREFIX, REPLACEMENT_SUFFIX);
        val phoneNo = record.get(CONTACT_NUMBER);
-       return new Notification(phoneNo, resolvedText);
+       return new SmsNotificationData(phoneNo, resolvedText);
     }
 }
