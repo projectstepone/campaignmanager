@@ -16,7 +16,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.text.StringSubstitutor;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -32,13 +31,11 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
-import java.io.Reader;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -98,6 +95,8 @@ public class Root {
 
         val notifications = StreamSupport.stream(records.spliterator(), false)
                 .map(item -> getSmsNotificationData(item, smsText))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .filter(smsNotificationData -> smsNotificationData.getPhone().matches("^\\p{Digit}{10}$"))
                 .collect(Collectors.toList());
 
@@ -289,12 +288,17 @@ public class Root {
      *
      * @return the resolved text
      */
-    private SmsNotificationData getSmsNotificationData(CSVRecord record, String templateText) {
+    private Optional<SmsNotificationData> getSmsNotificationData(CSVRecord record, String templateText) {
 
        val map = record.toMap();
 
-       val resolvedText = StringSubstitutor.replace(templateText, map,  REPLACEMENT_PREFIX, REPLACEMENT_SUFFIX);
-       val phoneNo = record.get(CONTACT_NUMBER);
-       return new SmsNotificationData(phoneNo, resolvedText);
+       try {
+           val resolvedText = StringSubstitutor.replace(templateText, map, REPLACEMENT_PREFIX, REPLACEMENT_SUFFIX);
+           val phoneNo = record.get(CONTACT_NUMBER);
+           return Optional.of(new SmsNotificationData(phoneNo, resolvedText));
+       } catch (Exception e) {
+           log.error("Error while creating sms content", e);
+           return Optional.empty();
+       }
     }
 }
