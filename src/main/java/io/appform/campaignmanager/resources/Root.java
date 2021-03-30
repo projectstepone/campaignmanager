@@ -81,6 +81,7 @@ public class Root {
     @PermitAll
     public Response createSmsCampaign(
             @FormDataParam("smsContent") final String smsText,
+            @FormDataParam("smsTemplateId") final String smsTemplateId,
             @FormDataParam("smsSender") final String sender,
             @FormDataParam("smsFile") InputStream fileInputStream,
             @FormDataParam("smsFile") FormDataContentDisposition fileMetaData,
@@ -118,6 +119,7 @@ public class Root {
                                                     .notificationId(UUID.randomUUID().toString())
                                                     .phone(notification.getPhone())
                                                     .content(notification.getContent())
+                                                    .smsTemplateId(smsTemplateId)
                                                     .provider(ProviderType.KALEYRA_SMS)
                                                     .state(NotificationState.CREATED)
                                                     .build())

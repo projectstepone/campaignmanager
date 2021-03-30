@@ -122,20 +122,20 @@ public class Notifier {
             String translatedProviderResponse = "";
             NotificationState state = NotificationState.TEMPORARY_FAILURE;
             try {
+                val kaleyraConfig = providerConfigs.getConfigs().get(ProviderType.KALEYRA_SMS);
                 val uri = new URIBuilder()
                         .setScheme("https")
                         .setHost("api-alerts.kaleyra.com")
                         .setPath("/v4/")
-                        .addParameter("api_key",
-                                      providerConfigs.getConfigs()
-                                              .get(ProviderType.KALEYRA_SMS)
-                                              .get("apiKey"))
+                        .addParameter("api_key", kaleyraConfig.get("apiKey"))
                         .addParameter("method", "sms")
                         .addParameter("message", sms.getContent())
                         .addParameter("to", sms.getPhone())
                         .addParameter("sender", campaign.getSendAs())
                         .addParameter("unicode", "auto")
                         .addParameter("custom", sms.getNotificationId())
+                        .addParameter("entity_id", kaleyraConfig.get("entityId"))
+                        .addParameter("template_id", sms.getSmsTemplateId())
                         .addParameter("dlrurl", callbackUrl(sms))
                         .build();
                 log.debug("Calling URI: {}", uri);

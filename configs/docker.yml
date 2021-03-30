@@ -93,4 +93,4 @@ providerConfigs:
       senders: ${KALEYRA_SMS_SENDERS}
     KALEYRA_IVR:
       apiKey: ${KALEYRA_IVR_KEY}
-
+      entityId: ${ENTITY_ID}
