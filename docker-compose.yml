@@ -39,6 +39,7 @@ services:
       KALEYRA_SMS_KEY: ${KALEYRA_SMS_KEY}
       KALEYRA_SMS_SENDERS: ${KALEYRA_SMS_SENDERS}
       KALEYRA_IVR_KEY: ${KALEYRA_IVR_KEY}
+      KALEYRA_ENTITY_ID: ${KALEYRA_ENTITY_ID}
       JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
       PROVIDER_CALLBACK_ENDPOINT: "http://localhost:8080"
 
