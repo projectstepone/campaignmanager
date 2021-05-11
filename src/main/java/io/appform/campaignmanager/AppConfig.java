@@ -1,8 +1,8 @@
 package io.appform.campaignmanager;
 
 import io.appform.campaignmanager.configs.ProviderConfigs;
-import io.appform.dropwizard.multiauth.configs.AuthConfig;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.idman.client.http.IdManHttpClientConfig;
 import io.dropwizard.Configuration;
 import io.dropwizard.client.HttpClientConfiguration;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class AppConfig extends Configuration {
 
     @Valid
     @NotNull
-    private AuthConfig auth = new AuthConfig();
+    private IdManHttpClientConfig idman = new IdManHttpClientConfig();
 
     @Valid
     @NotNull

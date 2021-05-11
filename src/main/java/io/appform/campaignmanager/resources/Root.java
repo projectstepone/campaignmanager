@@ -10,7 +10,7 @@ import io.appform.campaignmanager.views.CampaignSnapshotView;
 import io.appform.campaignmanager.views.CampaignView;
 import io.appform.campaignmanager.views.HomeView;
 import io.appform.campaignmanager.views.ItemsSnapshotView;
-import io.appform.dropwizard.multiauth.model.ServiceUserPrincipal;
+import io.appform.idman.authcomponents.security.ServiceUserPrincipal;
 import io.dropwizard.auth.Auth;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -106,7 +106,7 @@ public class Root {
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
                                             .name(System.currentTimeMillis() + "-" + fileName)
-                                            .createdBy(user.getUser().getId())
+                                            .createdBy(user.getServiceUser().getUser().getId())
                                             .notificationType(NotificationType.SMS)
                                             .content(smsText)
                                             .sendAs(sender)
@@ -161,7 +161,7 @@ public class Root {
                     .createCampaign(StoredCampaign.builder()
                                             .campaignId(campaignId)
                                             .name(System.currentTimeMillis() + "-" + fileName)
-                                            .createdBy(user.getUser().getId())
+                                            .createdBy(user.getServiceUser().getUser().getId())
                                             .notificationType(NotificationType.IVR)
                                             .content(ivrId)
                                             .sendAs(ivrSender)

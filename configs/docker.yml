@@ -68,22 +68,10 @@ db:
       evictionInterval: 30s
       minIdleTime: 1m
 
-auth:
-  enabled: ${AUTH_ENABLED}
-  allowedPatterns:
-  - /delivery/
-  jwt:
-    issuerId: statesman
-    privateKey: ${JWT_PRIVATE_KEY}
-    serviceName: statesman
-    sessionDuration: 15d
-
-  provider:
-    clientId: ${GOOGLE_CLIENT_ID}
-    clientSecret: ${GOOGLE_CLIENT_SECRET}
-    server: ${SERVER_ENDPOINT}
-    secureEndpoint: ${SECURE_ENDPOINT}
-    loginDomain: ${GOOGLE_DOMAIN}
+idman:
+  serviceId: CAMPAIGN_MANAGER
+  authEndpoint: http://192.168.3.153:8080
+  authSecret: b20cfc9f-2c0d-4e71-96b6-fae277f859a7
 
 providerConfigs:
   callbackEndpoint: ${PROVIDER_CALLBACK_ENDPOINT}

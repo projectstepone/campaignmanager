@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.inject.Stage;
-import io.appform.campaignmanager.auth.AuthModule;
 import io.appform.campaignmanager.handlebars.HandlebarsHelperBundle;
 import io.appform.campaignmanager.handlebars.HandlebarsHelpers;
 import io.appform.dropwizard.sharding.DBShardingBundle;
 import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.idman.authbundle.IdmanAuthBundle;
+import io.appform.idman.client.http.IdManHttpClientConfig;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -32,7 +33,6 @@ public class App extends Application<AppConfig> {
         }
     };
 
-
     @Override
     public void initialize(Bootstrap<AppConfig> bootstrap) {
         super.initialize(bootstrap);
@@ -52,13 +52,18 @@ public class App extends Application<AppConfig> {
         bootstrap.addBundle(new ViewBundle<>());
         bootstrap.addBundle(handlebarsBundle);
         bootstrap.addBundle(new MultiPartBundle());
+        bootstrap.addBundle(new IdmanAuthBundle<AppConfig>() {
+            @Override
+            public IdManHttpClientConfig clientConfig(AppConfig config) {
+                return config.getIdman();
+            }
+        });
         bootstrap.addBundle(
                 GuiceBundle.<AppConfig>builder()
-                .enableAutoConfig(getClass().getPackage().getName(), "io.appform.dropwizard.multiauth")
-                .modules(new CoreModule(dbShardingBundle), new AuthModule(dbShardingBundle))
-                .useWebInstallers()
-                .printDiagnosticInfo()
-                .build(Stage.PRODUCTION));
+                        .enableAutoConfig(getClass().getPackage().getName())
+                        .modules(new CoreModule(dbShardingBundle))
+                        .printDiagnosticInfo()
+                        .build(Stage.PRODUCTION));
 
         HandlebarsHelperBundle.registerHelpers(new HandlebarsHelpers());
     }
