@@ -70,8 +70,9 @@ db:
 
 idman:
   serviceId: CAMPAIGN_MANAGER
-  authEndpoint: http://192.168.3.153:8080
-  authSecret: b20cfc9f-2c0d-4e71-96b6-fae277f859a7
+  authEndpoint: ${IDMAN_ENDPOINT}
+  authSecret: ${IDMAN_SECRET}
+  publicEndpoint: ${SERVER_ENDPOINT}
 
 providerConfigs:
   callbackEndpoint: ${PROVIDER_CALLBACK_ENDPOINT}

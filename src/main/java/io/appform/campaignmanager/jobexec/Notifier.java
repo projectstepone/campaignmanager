@@ -65,7 +65,7 @@ public class Notifier {
         }
         log.info("Found {} items for campaign {}", items.size(), campaignId);
         campaignStore.updateCampaignState(campaignId, CampaignState.IN_PROGRESS);
-        executorService.submit(() -> handleJob(new Job(campaign, items)));
+        executorService.submit((Runnable) () -> handleJob(new Job(campaign, items)));
         return "";
     }
 

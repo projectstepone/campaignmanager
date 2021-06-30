@@ -1,23 +1,23 @@
 version: '3.3'
 services:
    mariadb_1:
-    image: mariadb:10.0.38
+    image: mariadb:10.5
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: campaignmanager_db_1
       MYSQL_USER: suser@%
       MYSQL_PASSWORD: password
     volumes:
-      - ./sql:/docker-entrypoint-initdb.d:rw
+      - ./sql:/docker-entrypoint-initdb.d:ro
    mariadb_2:
-    image: mariadb:10.0.38
+    image: mariadb:10.5
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: campaignmanager_db_2
       MYSQL_USER: suser@%
       MYSQL_PASSWORD: password
     volumes:
-      - ./sql:/docker-entrypoint-initdb.d:rw
+      - ./sql:/docker-entrypoint-initdb.d:ro
    campaignmanager:
     container_name: campaign-manager
     build: .
@@ -35,17 +35,17 @@ services:
       DB_PASSWORD: password
       AUTH_ENABLED: "false"
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      SERVER_ENDPOINT: localhost:9000
+      SERVER_ENDPOINT: http://localhost:9000
       SECURE_ENDPOINT: "false"
       GOOGLE_DOMAIN: projectstepone.org
+      PROVIDER_CALLBACK_ENDPOINT: "http://localhost:9000"
       KALEYRA_SMS_KEY: ${KALEYRA_SMS_KEY}
       KALEYRA_SMS_SENDERS: ${KALEYRA_SMS_SENDERS}
       KALEYRA_IVR_KEY: ${KALEYRA_IVR_KEY}
       KALEYRA_ENTITY_ID: ${KALEYRA_ENTITY_ID}
       JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
-      PROVIDER_CALLBACK_ENDPOINT: "http://localhost:8080"
+      IDMAN_ENDPOINT: ${IDMAN_ENDPOINT}
+      IDMAN_SECRET: ${IDMAN_SECRET}
 
     depends_on:
       - mariadb_1
